@@ -1,0 +1,28 @@
+name: Deploy master
+
+env:
+  ARCHITECT_EMAIL: ${{ secrets.ARCHITECT_EMAIL }} # pass secrets into a job from Github > Settings > Secrets
+  ARCHITECT_PASSWORD: ${{ secrets.ARCHITECT_PASSWORD }}
+  ARCHITECT_ACCOUNT: lara-beatriz
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  architect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Tests
+        run: echo "Run your tests here"
+      - name: Install Architect CLI
+        run: sudo npm install -g @architect-io/cli
+      - name: Login to Architect Cloud
+        run: architect login # credentials loaded automatically from envs ARCHITECT_EMAIL/ARCHITECT_PASSWORD
+      - name: Register and deploy to Staging
+        run: architect deploy architect.yml --environment supermarket --auto-approve
