@@ -30,10 +30,13 @@ export class ProductService {
       );
   }
 
-  async createProduct(product: CreateProductDto): Promise<Product | undefined> {
+  async createProduct(
+    product: CreateProductDto,
+    file: Express.Multer.File,
+  ): Promise<Product | undefined> {
     try {
       const source$ = this.productClient
-        .send({ role: 'product', cmd: 'create-product' }, product)
+        .send({ role: 'product', cmd: 'create-product' }, { ...product, file })
         .pipe(timeout(2000));
 
       const result = await lastValueFrom(source$, {

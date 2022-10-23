@@ -26,11 +26,10 @@ export class ProductController {
   @Post()
   @UseInterceptors(FileInterceptor('file'))
   @ApiOperation({ summary: 'Cria um usuário.' })
-  createUser(
+  async createUser(
     @UploadedFile() file: Express.Multer.File,
-    // @Body() product: CreateProductDto,
+    @Body() productData: CreateProductDto,
   ) {
-    console.log('file', file);
-    // return this.service.createProduct(product);
+    return this.service.createProduct(productData, file);
   }
 }

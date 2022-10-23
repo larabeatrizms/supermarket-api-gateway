@@ -11,7 +11,7 @@ import { ProductService } from './product.service';
         transport: Transport.TCP,
         options: {
           host: process.env.PRODUCT_SERVICE_HOST,
-          port: Number(process.env.PRODUCT_SERVICE_PORT),
+          port: 8081,
         },
       },
     ]),
