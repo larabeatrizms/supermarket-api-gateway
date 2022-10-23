@@ -7,6 +7,7 @@ import {
 import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
 import { map, timeout } from 'rxjs/operators';
+import { CreateCategoryDto } from './dtos/create-category.dto';
 import { CreateProductDto } from './dtos/create-product.dto';
 
 export type Product = any;
@@ -69,6 +70,33 @@ export class ProductService {
 
       const result = await lastValueFrom(source$, {
         defaultValue: 'Could not update a product.',
+      });
+
+      if (!result || result.status === 'error') {
+        throw new BadRequestException(result.message);
+      }
+
+      return result;
+    } catch (error) {
+      this.logger.log(error);
+      throw new BadRequestException(error);
+    }
+  }
+
+  async createCategory(
+    category: CreateCategoryDto,
+    image: Express.Multer.File,
+  ): Promise<Product | undefined> {
+    try {
+      const source$ = this.productClient
+        .send(
+          { role: 'category', cmd: 'create-category' },
+          { ...category, image },
+        )
+        .pipe(timeout(5000));
+
+      const result = await lastValueFrom(source$, {
+        defaultValue: 'Could not create a category.',
       });
 
       if (!result || result.status === 'error') {

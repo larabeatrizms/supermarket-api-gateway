@@ -26,6 +26,9 @@ async function bootstrap() {
 
   await app.listen(process.env.PORT);
 
-  logger.log('API Gateway is listening', 'Initialization');
+  logger.log(
+    `API Gateway is listening on port ${process.env.PORT}`,
+    'Initialization',
+  );
 }
 bootstrap();

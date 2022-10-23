@@ -17,19 +17,21 @@ import {
   UpdateProductBodyDto,
   UpdateProductParamDto,
 } from './dtos/update-product.dto';
+import { CreateCategoryDto } from './dtos/create-category.dto';
 
-@ApiTags('Product')
-@Controller('product')
+@Controller()
 export class ProductController {
   constructor(private readonly service: ProductService) {}
 
-  @Get('/ping')
+  @ApiTags('Product')
+  @Get('product/ping')
   @ApiOperation({ summary: 'Verifica se serviço está executando.' })
   pingUserService() {
     return this.service.pingProductService();
   }
 
-  @Post()
+  @ApiTags('Product')
+  @Post('product')
   @UseInterceptors(FileInterceptor('file'))
   @ApiOperation({ summary: 'Cria um produto.' })
   async createProduct(
@@ -39,7 +41,8 @@ export class ProductController {
     return this.service.createProduct(productData, file);
   }
 
-  @Put(':id')
+  @ApiTags('Product')
+  @Put('product/:id')
   @UseInterceptors(FileInterceptor('file'))
   @ApiOperation({ summary: 'Atualiza um produto.' })
   async updateProduct(
@@ -48,5 +51,16 @@ export class ProductController {
     @Body() product: UpdateProductBodyDto,
   ) {
     return this.service.updateProduct(params, product, file);
+  }
+
+  @ApiTags('Category')
+  @Post('category')
+  @UseInterceptors(FileInterceptor('image'))
+  @ApiOperation({ summary: 'Cria uma categoria.' })
+  async createCategory(
+    @UploadedFile() image: Express.Multer.File,
+    @Body() categoryData: CreateCategoryDto,
+  ) {
+    return this.service.createCategory(categoryData, image);
   }
 }
