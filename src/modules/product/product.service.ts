@@ -53,4 +53,32 @@ export class ProductService {
       throw new BadRequestException(error);
     }
   }
+
+  async updateProduct(
+    { id }: { id: string },
+    product: CreateProductDto,
+    file: Express.Multer.File,
+  ): Promise<Product | undefined> {
+    try {
+      const source$ = this.productClient
+        .send(
+          { role: 'product', cmd: 'update-product' },
+          { ...product, id: Number(id), file },
+        )
+        .pipe(timeout(2000));
+
+      const result = await lastValueFrom(source$, {
+        defaultValue: 'Could not update a product.',
+      });
+
+      if (!result || result.status === 'error') {
+        throw new BadRequestException(result.message);
+      }
+
+      return result;
+    } catch (error) {
+      this.logger.log(error);
+      throw new BadRequestException(error);
+    }
+  }
 }

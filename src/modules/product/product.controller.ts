@@ -3,7 +3,9 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
+  Put,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -11,6 +13,10 @@ import {
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dtos/create-product.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import {
+  UpdateProductBodyDto,
+  UpdateProductParamDto,
+} from './dtos/update-product.dto';
 
 @ApiTags('Product')
 @Controller('product')
@@ -25,11 +31,22 @@ export class ProductController {
 
   @Post()
   @UseInterceptors(FileInterceptor('file'))
-  @ApiOperation({ summary: 'Cria um usuário.' })
-  async createUser(
+  @ApiOperation({ summary: 'Cria um produto.' })
+  async createProduct(
     @UploadedFile() file: Express.Multer.File,
     @Body() productData: CreateProductDto,
   ) {
     return this.service.createProduct(productData, file);
+  }
+
+  @Put(':id')
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiOperation({ summary: 'Atualiza um produto.' })
+  async updateProduct(
+    @UploadedFile() file: Express.Multer.File,
+    @Param() params: UpdateProductParamDto,
+    @Body() product: UpdateProductBodyDto,
+  ) {
+    return this.service.updateProduct(params, product, file);
   }
 }
