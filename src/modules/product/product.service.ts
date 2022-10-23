@@ -9,6 +9,7 @@ import { lastValueFrom } from 'rxjs';
 import { map, timeout } from 'rxjs/operators';
 import { CreateCategoryDto } from './dtos/create-category.dto';
 import { CreateProductDto } from './dtos/create-product.dto';
+import { UpdateCategoryBodyDto } from './dtos/update-category.dto';
 
 export type Product = any;
 
@@ -66,7 +67,7 @@ export class ProductService {
           { role: 'product', cmd: 'update-product' },
           { ...product, id: Number(id), file },
         )
-        .pipe(timeout(2000));
+        .pipe(timeout(5000));
 
       const result = await lastValueFrom(source$, {
         defaultValue: 'Could not update a product.',
@@ -97,6 +98,34 @@ export class ProductService {
 
       const result = await lastValueFrom(source$, {
         defaultValue: 'Could not create a category.',
+      });
+
+      if (!result || result.status === 'error') {
+        throw new BadRequestException(result.message);
+      }
+
+      return result;
+    } catch (error) {
+      this.logger.log(error);
+      throw new BadRequestException(error);
+    }
+  }
+
+  async updateCategory(
+    { id }: { id: string },
+    category: UpdateCategoryBodyDto,
+    file: Express.Multer.File,
+  ): Promise<Product | undefined> {
+    try {
+      const source$ = this.productClient
+        .send(
+          { role: 'category', cmd: 'update-category' },
+          { ...category, id: Number(id), image: file },
+        )
+        .pipe(timeout(5000));
+
+      const result = await lastValueFrom(source$, {
+        defaultValue: 'Não foi possível atualizar categoria!.',
       });
 
       if (!result || result.status === 'error') {

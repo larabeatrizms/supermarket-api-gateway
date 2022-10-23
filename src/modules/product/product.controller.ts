@@ -18,6 +18,10 @@ import {
   UpdateProductParamDto,
 } from './dtos/update-product.dto';
 import { CreateCategoryDto } from './dtos/create-category.dto';
+import {
+  UpdateCategoryBodyDto,
+  UpdateCategoryParamDto,
+} from './dtos/update-category.dto';
 
 @Controller()
 export class ProductController {
@@ -62,5 +66,17 @@ export class ProductController {
     @Body() categoryData: CreateCategoryDto,
   ) {
     return this.service.createCategory(categoryData, image);
+  }
+
+  @ApiTags('Category')
+  @Put('category/:id')
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiOperation({ summary: 'Atualiza uma categoria.' })
+  async updateCategory(
+    @UploadedFile() file: Express.Multer.File,
+    @Param() params: UpdateCategoryParamDto,
+    @Body() category: UpdateCategoryBodyDto,
+  ) {
+    return this.service.updateCategory(params, category, file);
   }
 }
