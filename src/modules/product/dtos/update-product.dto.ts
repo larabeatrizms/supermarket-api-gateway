@@ -24,4 +24,8 @@ export class UpdateProductBodyDto {
   @ApiProperty({ type: 'number' })
   @IsNumberString()
   price: string;
+
+  @ApiProperty({ type: 'number' })
+  @IsNumberString()
+  category_id: string;
 }

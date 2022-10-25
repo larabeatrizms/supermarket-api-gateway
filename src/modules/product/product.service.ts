@@ -38,7 +38,15 @@ export class ProductService {
   ): Promise<Product | undefined> {
     try {
       const source$ = this.productClient
-        .send({ role: 'product', cmd: 'create-product' }, { ...product, file })
+        .send(
+          { role: 'product', cmd: 'create-product' },
+          {
+            ...product,
+            category_id: Number(product.category_id),
+            price: Number(product.price),
+            file,
+          },
+        )
         .pipe(timeout(2000));
 
       const result = await lastValueFrom(source$, {
@@ -65,7 +73,12 @@ export class ProductService {
       const source$ = this.productClient
         .send(
           { role: 'product', cmd: 'update-product' },
-          { ...product, id: Number(id), file },
+          {
+            ...product,
+            id: Number(id),
+            category_id: Number(product.category_id),
+            file,
+          },
         )
         .pipe(timeout(5000));
 

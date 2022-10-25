@@ -18,4 +18,8 @@ export class CreateProductDto {
   @ApiProperty()
   @IsNumberString()
   price: string;
+
+  @ApiProperty()
+  @IsNumberString()
+  category_id: string;
 }
