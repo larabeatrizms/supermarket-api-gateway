@@ -22,6 +22,7 @@ import {
   UpdateCategoryBodyDto,
   UpdateCategoryParamDto,
 } from './dtos/update-category.dto';
+import { FindProductByIdDto } from './dtos/find-product-by-id.dto';
 
 @Controller()
 export class ProductController {
@@ -43,6 +44,13 @@ export class ProductController {
     @Body() productData: CreateProductDto,
   ) {
     return this.service.createProduct(productData, file);
+  }
+
+  @ApiTags('Product')
+  @Get('product/:id')
+  @ApiOperation({ summary: 'Busca um produto pelo ID.' })
+  async findProductById(@Param() params: FindProductByIdDto) {
+    return this.service.findProductById(params);
   }
 
   @ApiTags('Product')

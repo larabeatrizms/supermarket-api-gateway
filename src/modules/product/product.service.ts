@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  HttpStatus,
   Inject,
   Injectable,
   Logger,
@@ -9,6 +10,7 @@ import { lastValueFrom } from 'rxjs';
 import { map, timeout } from 'rxjs/operators';
 import { CreateCategoryDto } from './dtos/create-category.dto';
 import { CreateProductDto } from './dtos/create-product.dto';
+import { FindProductByIdDto } from './dtos/find-product-by-id.dto';
 import { UpdateCategoryBodyDto } from './dtos/update-category.dto';
 
 export type Product = any;
@@ -94,6 +96,38 @@ export class ProductService {
     } catch (error) {
       this.logger.log(error);
       throw new BadRequestException(error);
+    }
+  }
+
+  async findProductById({
+    id,
+  }: FindProductByIdDto): Promise<Product | undefined> {
+    try {
+      const source$ = this.productClient
+        .send(
+          { role: 'product', cmd: 'find-product-by-id' },
+          {
+            id: Number(id),
+          },
+        )
+        .pipe(timeout(5000));
+
+      const result = await lastValueFrom(source$, {
+        defaultValue: 'Não foi possível encontrar o produto.',
+      });
+
+      if (
+        !result ||
+        result.status === 'error' ||
+        (result.status && result.status !== HttpStatus.OK)
+      ) {
+        throw new BadRequestException(result.message);
+      }
+
+      return result;
+    } catch (error) {
+      this.logger.log(error);
+      throw new BadRequestException(error ? error.message : error);
     }
   }
 
