@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -23,6 +24,7 @@ import {
   UpdateCategoryParamDto,
 } from './dtos/update-category.dto';
 import { FindProductByIdDto } from './dtos/find-product-by-id.dto';
+import { FindProductsByFieldsDto } from './dtos/find-products-by-fields.dto';
 
 @Controller()
 export class ProductController {
@@ -44,6 +46,13 @@ export class ProductController {
     @Body() productData: CreateProductDto,
   ) {
     return this.service.createProduct(productData, file);
+  }
+
+  @ApiTags('Product')
+  @Get('product')
+  @ApiOperation({ summary: 'Busca produtos por campos específicos.' })
+  async findProductsByFields(@Query() query: FindProductsByFieldsDto) {
+    return this.service.findProductsByFields(query);
   }
 
   @ApiTags('Product')
