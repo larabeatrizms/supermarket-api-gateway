@@ -21,6 +21,8 @@ import {
   UpdateUserAddressParamDto,
 } from './dtos/update-user-address.dto';
 import { UpdateUserPasswordDto } from './dtos/update-user-password.dto';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 
 @ApiTags('User')
 @Controller('user')
@@ -40,14 +42,16 @@ export class UserController {
   }
 
   @Get('/:id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('customer', 'admin')
   @ApiOperation({ summary: 'Busca um usuário pelo ID.' })
   showUser(@Param() data: ShowUserDto) {
     return this.userService.showUser(data);
   }
 
   @Patch('/profile/:id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('customer', 'admin')
   @ApiOperation({ summary: 'Editar perfil de um usuário.' })
   updateUserProfile(
     @Param() params: Pick<UpdateUserDto, 'user_id'>,
@@ -60,7 +64,8 @@ export class UserController {
   }
 
   @Put('/address/:id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('customer', 'admin')
   @ApiOperation({ summary: 'Editar endereço de um usuário.' })
   updateUserAddress(
     @Param() params: UpdateUserAddressParamDto,
@@ -70,7 +75,8 @@ export class UserController {
   }
 
   @Patch('/password')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('customer', 'admin')
   @ApiOperation({ summary: 'Editar a senha de um usuário.' })
   async updateUserPassword(
     @Request() req,

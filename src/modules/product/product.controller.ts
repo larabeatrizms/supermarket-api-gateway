@@ -8,6 +8,7 @@ import {
   Put,
   Query,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 
@@ -25,6 +26,9 @@ import {
 } from './dtos/update-category.dto';
 import { FindProductByIdDto } from './dtos/find-product-by-id.dto';
 import { FindProductsByFieldsDto } from './dtos/find-products-by-fields.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 
 @Controller()
 export class ProductController {
@@ -38,6 +42,8 @@ export class ProductController {
   }
 
   @ApiTags('Product')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Post('product')
   @UseInterceptors(FileInterceptor('file'))
   @ApiOperation({ summary: 'Cria um produto.' })
@@ -49,6 +55,8 @@ export class ProductController {
   }
 
   @ApiTags('Product')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('customer', 'admin')
   @Get('product')
   @ApiOperation({ summary: 'Busca produtos por campos específicos.' })
   async findProductsByFields(@Query() query: FindProductsByFieldsDto) {
@@ -56,6 +64,8 @@ export class ProductController {
   }
 
   @ApiTags('Product')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('customer', 'admin')
   @Get('product/:id')
   @ApiOperation({ summary: 'Busca um produto pelo ID.' })
   async findProductById(@Param() params: FindProductByIdDto) {
@@ -63,6 +73,8 @@ export class ProductController {
   }
 
   @ApiTags('Product')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Put('product/:id')
   @UseInterceptors(FileInterceptor('file'))
   @ApiOperation({ summary: 'Atualiza um produto.' })
@@ -75,6 +87,8 @@ export class ProductController {
   }
 
   @ApiTags('Category')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Post('category')
   @UseInterceptors(FileInterceptor('image'))
   @ApiOperation({ summary: 'Cria uma categoria.' })
@@ -86,6 +100,8 @@ export class ProductController {
   }
 
   @ApiTags('Category')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Put('category/:id')
   @UseInterceptors(FileInterceptor('file'))
   @ApiOperation({ summary: 'Atualiza uma categoria.' })
