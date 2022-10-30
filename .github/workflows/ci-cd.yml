@@ -25,4 +25,4 @@ jobs:
       - name: Login to Architect Cloud
         run: architect login # credentials loaded automatically from envs ARCHITECT_EMAIL/ARCHITECT_PASSWORD
       - name: Register and deploy to Staging
-        run: architect deploy architect.yml --environment supermarket --auto-approve
+        run: architect deploy architect.yml --environment prod --auto-approve
