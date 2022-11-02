@@ -21,10 +21,10 @@ export class OrderController {
   @ApiTags('Order')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin')
+  @Roles('admin', 'customer')
   @Post('order')
   @ApiOperation({ summary: 'Cria um produto.' })
-  async createOrder(@Body() productData: CreateOrderDto) {
-    return this.service.createOrder(productData);
+  async createOrder(@Body() orderData: CreateOrderDto) {
+    return this.service.createOrder(orderData);
   }
 }
