@@ -11,6 +11,7 @@ keywords:
 dependencies:
   supermarket-user-service: architect.environment.prod
   supermarket-product-service: architect.environment.prod
+  supermarket-order-service: architect.environment.prod
 services:
   client:
     build:
@@ -21,6 +22,7 @@ services:
       # Dyanmically enriches our environment variables with the location of the other microservice
       USER_SERVICE_HOST: ${{ dependencies['supermarket-user-service'].interfaces.main.host }}
       PRODUCT_SERVICE_HOST: ${{ dependencies['supermarket-product-service'].interfaces.main.host }}
+      ORDER_SERVICE_HOST: ${{ dependencies['supermarket-order-service'].interfaces.main.host }}
       JWT_KEY: secret_key_test
       PORT: 3000
     debug:

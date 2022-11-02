@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 
 import { AppLoggerMiddleware } from './app.middleware';
 import { AuthModule } from './modules/auth/auth.module';
+import { OrderModule } from './modules/order/order.module';
 import { ProductModule } from './modules/product/product.module';
 import { UserModule } from './modules/user/user.module';
 
@@ -11,6 +12,7 @@ import { UserModule } from './modules/user/user.module';
     AuthModule,
     UserModule,
     ProductModule,
+    OrderModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
