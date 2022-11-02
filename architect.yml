@@ -9,8 +9,8 @@ keywords:
 
 # Sets up the connection to our previous microservice
 dependencies:
-  supermarket-user-service: latest
-  supermarket-product-service: latest
+  supermarket-user-service: architect.environment.prod
+  supermarket-product-service: architect.environment.prod
 services:
   client:
     build:
