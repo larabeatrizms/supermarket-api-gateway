@@ -1,4 +1,4 @@
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import {
   Body,
   Controller,
@@ -42,10 +42,11 @@ export class ProductController {
   }
 
   @ApiTags('Product')
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @Post('product')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('image'))
   @ApiOperation({ summary: 'Cria um produto.' })
   async createProduct(
     @UploadedFile() file: Express.Multer.File,
@@ -55,6 +56,7 @@ export class ProductController {
   }
 
   @ApiTags('Product')
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('customer', 'admin')
   @Get('product')
@@ -64,6 +66,7 @@ export class ProductController {
   }
 
   @ApiTags('Product')
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('customer', 'admin')
   @Get('product/:id')
@@ -73,10 +76,11 @@ export class ProductController {
   }
 
   @ApiTags('Product')
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @Put('product/:id')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('image'))
   @ApiOperation({ summary: 'Atualiza um produto.' })
   async updateProduct(
     @UploadedFile() file: Express.Multer.File,
@@ -87,6 +91,7 @@ export class ProductController {
   }
 
   @ApiTags('Category')
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @Post('category')
@@ -100,10 +105,11 @@ export class ProductController {
   }
 
   @ApiTags('Category')
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @Put('category/:id')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('image'))
   @ApiOperation({ summary: 'Atualiza uma categoria.' })
   async updateCategory(
     @UploadedFile() file: Express.Multer.File,

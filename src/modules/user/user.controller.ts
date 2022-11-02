@@ -1,4 +1,4 @@
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import {
   Body,
   Controller,
@@ -42,6 +42,7 @@ export class UserController {
   }
 
   @Get('/:id')
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('customer', 'admin')
   @ApiOperation({ summary: 'Busca um usuário pelo ID.' })
@@ -50,6 +51,7 @@ export class UserController {
   }
 
   @Patch('/profile/:id')
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('customer', 'admin')
   @ApiOperation({ summary: 'Editar perfil de um usuário.' })
@@ -64,6 +66,7 @@ export class UserController {
   }
 
   @Put('/address/:id')
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('customer', 'admin')
   @ApiOperation({ summary: 'Editar endereço de um usuário.' })
@@ -75,6 +78,7 @@ export class UserController {
   }
 
   @Patch('/password')
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('customer', 'admin')
   @ApiOperation({ summary: 'Editar a senha de um usuário.' })
