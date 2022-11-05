@@ -2,6 +2,7 @@ import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -29,6 +30,7 @@ import { FindProductsByFieldsDto } from './dtos/find-products-by-fields.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { DeleteProductDto } from './dtos/delete-product.dto';
 
 @Controller()
 export class ProductController {
@@ -117,5 +119,15 @@ export class ProductController {
     @Body() category: UpdateCategoryBodyDto,
   ) {
     return this.service.updateCategory(params, category, file);
+  }
+
+  @ApiTags('Produto')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @Delete('product/:id')
+  @ApiOperation({ summary: 'Deleta um produto pelo ID.' })
+  async deleteProduct(@Param() params: DeleteProductDto) {
+    return this.service.deleteProduct(params);
   }
 }
