@@ -11,19 +11,19 @@ import { CreateOrderDto } from './dtos/create-order.dto';
 export class OrderController {
   constructor(private readonly service: OrderService) {}
 
-  @ApiTags('Order')
+  @ApiTags('Serviços')
   @Get('order/ping')
   @ApiOperation({ summary: 'Verifica se serviço está executando.' })
   pingUserService() {
     return this.service.pingOrderService();
   }
 
-  @ApiTags('Order')
+  @ApiTags('Pedido')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin', 'customer')
   @Post('order')
-  @ApiOperation({ summary: 'Cria um produto.' })
+  @ApiOperation({ summary: 'Cria um pedido.' })
   async createOrder(@Body() orderData: CreateOrderDto) {
     return this.service.createOrder(orderData);
   }

@@ -24,23 +24,25 @@ import { UpdateUserPasswordDto } from './dtos/update-user-password.dto';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 
-@ApiTags('User')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @ApiTags('Serviços')
   @Get('/ping')
   @ApiOperation({ summary: 'Verifica se serviço está executando.' })
   pingUserService() {
     return this.userService.pingUserService();
   }
 
+  @ApiTags('Usuário')
   @Post()
   @ApiOperation({ summary: 'Cria um usuário.' })
   createUser(@Body() user: CreateUserDto) {
     return this.userService.createUser(user);
   }
 
+  @ApiTags('Usuário')
   @Get('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -50,6 +52,7 @@ export class UserController {
     return this.userService.showUser(data);
   }
 
+  @ApiTags('Usuário')
   @Patch('/profile/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -65,6 +68,7 @@ export class UserController {
     });
   }
 
+  @ApiTags('Usuário')
   @Put('/address/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -77,6 +81,7 @@ export class UserController {
     return this.userService.updateUserAddress(params, body);
   }
 
+  @ApiTags('Usuário')
   @Patch('/password')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)

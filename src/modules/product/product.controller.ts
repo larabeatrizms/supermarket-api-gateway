@@ -34,14 +34,14 @@ import { Roles } from '../auth/decorators/roles.decorator';
 export class ProductController {
   constructor(private readonly service: ProductService) {}
 
-  @ApiTags('Product')
+  @ApiTags('Serviços')
   @Get('product/ping')
   @ApiOperation({ summary: 'Verifica se serviço está executando.' })
   pingUserService() {
     return this.service.pingProductService();
   }
 
-  @ApiTags('Product')
+  @ApiTags('Produto')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
@@ -55,7 +55,7 @@ export class ProductController {
     return this.service.createProduct(productData, file);
   }
 
-  @ApiTags('Product')
+  @ApiTags('Produto')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('customer', 'admin')
@@ -65,7 +65,7 @@ export class ProductController {
     return this.service.findProductsByFields(query);
   }
 
-  @ApiTags('Product')
+  @ApiTags('Produto')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('customer', 'admin')
@@ -75,7 +75,7 @@ export class ProductController {
     return this.service.findProductById(params);
   }
 
-  @ApiTags('Product')
+  @ApiTags('Produto')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')

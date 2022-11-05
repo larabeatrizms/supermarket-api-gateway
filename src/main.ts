@@ -16,7 +16,9 @@ async function bootstrap() {
   // Swagger configuration
   const config = new DocumentBuilder()
     .setTitle('Supermarket API')
-    .setDescription('The supermarket API documentation.')
+    .setDescription(
+      'A documentação da "Supermarket API". Funcionalidades e verificação de status dos serviços.',
+    )
     .setVersion('1.0.0')
     .addBearerAuth()
     .build();
