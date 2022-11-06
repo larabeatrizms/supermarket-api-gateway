@@ -70,7 +70,7 @@ export class OrderController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('customer', 'admin')
   @Get('order')
-  @ApiOperation({ summary: 'Busca pedidos por campos específicos.' })
+  @ApiOperation({ summary: 'Busca pedidos de acordo com o usuário logado.' })
   async findOrderByFields(@Request() req) {
     return this.service.findOrdersByFields(req.user);
   }
