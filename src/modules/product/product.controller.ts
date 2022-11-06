@@ -31,6 +31,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { DeleteProductDto } from './dtos/delete-product.dto';
+import { DeleteCategoryDto } from './dtos/delete-category.dto';
 
 @Controller()
 export class ProductController {
@@ -92,7 +93,7 @@ export class ProductController {
     return this.service.updateProduct(params, product, file);
   }
 
-  @ApiTags('Category')
+  @ApiTags('Categoria')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
@@ -106,7 +107,7 @@ export class ProductController {
     return this.service.createCategory(categoryData, image);
   }
 
-  @ApiTags('Category')
+  @ApiTags('Categoria')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
@@ -129,5 +130,15 @@ export class ProductController {
   @ApiOperation({ summary: 'Deleta um produto pelo ID.' })
   async deleteProduct(@Param() params: DeleteProductDto) {
     return this.service.deleteProduct(params);
+  }
+
+  @ApiTags('Categoria')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @Delete('category/:id')
+  @ApiOperation({ summary: 'Deleta uma categoria pelo ID.' })
+  async deleteCategory(@Param() params: DeleteCategoryDto) {
+    return this.service.deleteCategory(params);
   }
 }

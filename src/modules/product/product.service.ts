@@ -10,6 +10,7 @@ import { lastValueFrom } from 'rxjs';
 import { map, timeout } from 'rxjs/operators';
 import { CreateCategoryDto } from './dtos/create-category.dto';
 import { CreateProductDto } from './dtos/create-product.dto';
+import { DeleteCategoryDto } from './dtos/delete-category.dto';
 import { DeleteProductDto } from './dtos/delete-product.dto';
 import { FindProductByIdDto } from './dtos/find-product-by-id.dto';
 import { FindProductsByFieldsDto } from './dtos/find-products-by-fields.dto';
@@ -31,7 +32,7 @@ export class ProductService {
     return this.productClient
       .send<string>({ role: 'product', cmd: 'ping' }, {})
       .pipe(
-        timeout(5000),
+        timeout(20000),
         map((message) => ({ message, duration: Date.now() - startTs })),
       );
   }
@@ -84,7 +85,7 @@ export class ProductService {
             file,
           },
         )
-        .pipe(timeout(5000));
+        .pipe(timeout(20000));
 
       const result = await lastValueFrom(source$, {
         defaultValue: 'Could not update a product.',
@@ -107,7 +108,7 @@ export class ProductService {
     try {
       const source$ = this.productClient
         .send({ role: 'product', cmd: 'find-products-by-fields' }, data)
-        .pipe(timeout(5000));
+        .pipe(timeout(20000));
 
       const result = await lastValueFrom(source$, {
         defaultValue:
@@ -140,7 +141,7 @@ export class ProductService {
             id: Number(id),
           },
         )
-        .pipe(timeout(5000));
+        .pipe(timeout(20000));
 
       const result = await lastValueFrom(source$, {
         defaultValue: 'Não foi possível encontrar o produto.',
@@ -171,7 +172,7 @@ export class ProductService {
           { role: 'category', cmd: 'create-category' },
           { ...category, image },
         )
-        .pipe(timeout(5000));
+        .pipe(timeout(20000));
 
       const result = await lastValueFrom(source$, {
         defaultValue: 'Could not create a category.',
@@ -199,7 +200,7 @@ export class ProductService {
           { role: 'category', cmd: 'update-category' },
           { ...category, id: Number(id), image: file },
         )
-        .pipe(timeout(5000));
+        .pipe(timeout(20000));
 
       const result = await lastValueFrom(source$, {
         defaultValue: 'Não foi possível atualizar categoria!.',
@@ -225,10 +226,40 @@ export class ProductService {
             id: Number(id),
           },
         )
-        .pipe(timeout(5000));
+        .pipe(timeout(20000));
 
       const result = await lastValueFrom(source$, {
         defaultValue: 'Não foi possível deletar o produto.',
+      });
+
+      if (
+        !result ||
+        result.status === 'error' ||
+        (result.status && result.status !== HttpStatus.OK)
+      ) {
+        throw new BadRequestException(result.message);
+      }
+
+      return result;
+    } catch (error) {
+      this.logger.log(error);
+      throw new BadRequestException(error ? error.message : error);
+    }
+  }
+
+  async deleteCategory({ id }: DeleteCategoryDto): Promise<void> {
+    try {
+      const source$ = this.productClient
+        .send(
+          { role: 'category', cmd: 'delete-category' },
+          {
+            id: Number(id),
+          },
+        )
+        .pipe(timeout(20000));
+
+      const result = await lastValueFrom(source$, {
+        defaultValue: 'Não foi possível deletar a categoria.',
       });
 
       if (
