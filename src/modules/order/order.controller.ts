@@ -18,6 +18,7 @@ import {
   UpdateOrderBodyDto,
   UpdateOrderParamDto,
 } from './dtos/update-order-status.dto';
+import { FindOrderByIdDto } from './dtos/find-order-by-id.dto';
 
 @Controller()
 export class OrderController {
@@ -51,5 +52,15 @@ export class OrderController {
     @Body() order: UpdateOrderBodyDto,
   ) {
     return this.service.updateOrderStatus(params, order);
+  }
+
+  @ApiTags('Pedido')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('customer', 'admin')
+  @Get('order/:id')
+  @ApiOperation({ summary: 'Busca um pedido pelo ID.' })
+  async findOrderById(@Param() params: FindOrderByIdDto) {
+    return this.service.findOrderById(params);
   }
 }

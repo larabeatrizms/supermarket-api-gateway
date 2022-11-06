@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  HttpStatus,
   Inject,
   Injectable,
   Logger,
@@ -8,6 +9,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
 import { map, timeout } from 'rxjs/operators';
 import { CreateOrderDto } from './dtos/create-order.dto';
+import { FindOrderByIdDto } from './dtos/find-order-by-id.dto';
 import {
   UpdateOrderBodyDto,
   UpdateOrderParamDto,
@@ -79,6 +81,38 @@ export class OrderService {
     } catch (error) {
       this.logger.log(error);
       throw new BadRequestException(error);
+    }
+  }
+
+  async findOrderById({ id }: FindOrderByIdDto): Promise<Order | undefined> {
+    try {
+      const source$ = this.orderClient
+        .send(
+          { role: 'order', cmd: 'find-order-by-id' },
+          {
+            id: Number(id),
+          },
+        )
+        .pipe(timeout(20000));
+
+      const result = await lastValueFrom(source$, {
+        defaultValue: 'Não foi possível encontrar o pedido.',
+      });
+
+      if (
+        !result ||
+        result.status === 'error' ||
+        (result.status &&
+          typeof result.status === 'number' &&
+          result.status !== HttpStatus.OK)
+      ) {
+        throw new BadRequestException(result.message);
+      }
+
+      return result;
+    } catch (error) {
+      this.logger.log(error);
+      throw new BadRequestException(error ? error.message : error);
     }
   }
 }
