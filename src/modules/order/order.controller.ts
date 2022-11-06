@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 
@@ -62,5 +63,15 @@ export class OrderController {
   @ApiOperation({ summary: 'Busca um pedido pelo ID.' })
   async findOrderById(@Param() params: FindOrderByIdDto) {
     return this.service.findOrderById(params);
+  }
+
+  @ApiTags('Pedido')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('customer', 'admin')
+  @Get('order')
+  @ApiOperation({ summary: 'Busca pedidos por campos específicos.' })
+  async findOrderByFields(@Request() req) {
+    return this.service.findOrdersByFields(req.user);
   }
 }
