@@ -1,11 +1,23 @@
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 
 import { OrderService } from './order.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { CreateOrderDto } from './dtos/create-order.dto';
+import {
+  UpdateOrderBodyDto,
+  UpdateOrderParamDto,
+} from './dtos/update-order-status.dto';
 
 @Controller()
 export class OrderController {
@@ -26,5 +38,18 @@ export class OrderController {
   @ApiOperation({ summary: 'Cria um pedido.' })
   async createOrder(@Body() orderData: CreateOrderDto) {
     return this.service.createOrder(orderData);
+  }
+
+  @ApiTags('Pedido')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @Patch('order/:id')
+  @ApiOperation({ summary: 'Atualiza o status de um pedido.' })
+  async updateOrderStatus(
+    @Param() params: UpdateOrderParamDto,
+    @Body() order: UpdateOrderBodyDto,
+  ) {
+    return this.service.updateOrderStatus(params, order);
   }
 }

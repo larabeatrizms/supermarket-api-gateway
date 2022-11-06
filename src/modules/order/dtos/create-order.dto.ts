@@ -48,7 +48,7 @@ class CreateOrderItemDto {
 export class CreateOrderDto {
   @ApiProperty()
   @IsNumber()
-  customer_id: number;
+  user_id: number;
 
   @ApiProperty()
   @IsObject()
