@@ -9,6 +9,7 @@ import {
   Put,
   UseGuards,
   Request,
+  Delete,
 } from '@nestjs/common';
 
 import { UserService } from './user.service';
@@ -23,6 +24,7 @@ import {
 import { UpdateUserPasswordDto } from './dtos/update-user-password.dto';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { DeleteUserDto } from './dtos/delete-user.dto';
 
 @Controller('user')
 export class UserController {
@@ -92,5 +94,15 @@ export class UserController {
     @Body() body: UpdateUserPasswordDto,
   ): Promise<boolean> {
     return this.userService.updateUserPassword(req.user.userId, body);
+  }
+
+  @ApiTags('Usuário')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @Delete(':id')
+  @ApiOperation({ summary: 'Deleta um usuário pelo ID.' })
+  async deleteUser(@Param() params: DeleteUserDto) {
+    return this.userService.deleteUser(params);
   }
 }

@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  HttpStatus,
   Inject,
   Injectable,
   Logger,
@@ -9,6 +10,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
 import { map, timeout } from 'rxjs/operators';
 import { CreateUserDto } from './dtos/create-user.dto';
+import { DeleteUserDto } from './dtos/delete-user.dto';
 import { ShowUserDto } from './dtos/show-user.dto';
 import {
   UpdateUserAddressBodyDto,
@@ -219,6 +221,36 @@ export class UserService {
     } catch (error) {
       this.logger.log(error);
       throw new BadRequestException(error);
+    }
+  }
+
+  async deleteUser({ id }: DeleteUserDto): Promise<void> {
+    try {
+      const source$ = this.userClient
+        .send(
+          { role: 'user', cmd: 'delete-user' },
+          {
+            id: Number(id),
+          },
+        )
+        .pipe(timeout(20000));
+
+      const result = await lastValueFrom(source$, {
+        defaultValue: 'Não foi possível deletar o usuário.',
+      });
+
+      if (
+        !result ||
+        result.status === 'error' ||
+        (result.status && result.status !== HttpStatus.OK)
+      ) {
+        throw new BadRequestException(result.message);
+      }
+
+      return result;
+    } catch (error) {
+      this.logger.log(error);
+      throw new BadRequestException(error ? error.message : error);
     }
   }
 }
