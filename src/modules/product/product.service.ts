@@ -85,7 +85,7 @@ export class ProductService {
             file,
           },
         )
-        .pipe(timeout(20000));
+        .pipe(timeout(100000));
 
       const result = await lastValueFrom(source$, {
         defaultValue: 'Could not update a product.',
@@ -108,7 +108,7 @@ export class ProductService {
     try {
       const source$ = this.productClient
         .send({ role: 'product', cmd: 'find-products-by-fields' }, data)
-        .pipe(timeout(20000));
+        .pipe(timeout(100000));
 
       const result = await lastValueFrom(source$, {
         defaultValue:
@@ -141,7 +141,7 @@ export class ProductService {
             id: Number(id),
           },
         )
-        .pipe(timeout(20000));
+        .pipe(timeout(100000));
 
       const result = await lastValueFrom(source$, {
         defaultValue: 'Não foi possível encontrar o produto.',
