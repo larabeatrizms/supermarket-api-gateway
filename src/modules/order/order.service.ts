@@ -42,7 +42,7 @@ export class OrderService {
     try {
       const source$ = this.orderClient
         .send({ role: 'order', cmd: 'create-order' }, order)
-        .pipe(timeout(2000));
+        .pipe(timeout(100000));
 
       const result = await lastValueFrom(source$, {
         defaultValue: 'Could not create a order.',
@@ -132,7 +132,7 @@ export class OrderService {
 
       const source$ = this.orderClient
         .send({ role: 'order', cmd: 'find-orders-by-fields' }, data)
-        .pipe(timeout(20000));
+        .pipe(timeout(100000));
 
       const result = await lastValueFrom(source$, {
         defaultValue:
