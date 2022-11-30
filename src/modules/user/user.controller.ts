@@ -61,12 +61,14 @@ export class UserController {
   @Roles('customer', 'admin')
   @ApiOperation({ summary: 'Editar perfil de um usuário.' })
   updateUserProfile(
-    @Param() params: Pick<UpdateUserDto, 'user_id'>,
-    @Body() body: Omit<UpdateUserDto, 'user_id'>,
+    @Param('id') userId: number,
+    @Body() body: Omit<UpdateUserDto, 'user_id' | 'userSession'>,
+    @Request() req,
   ) {
     return this.userService.updateUserProfile({
-      ...params,
       ...body,
+      user_id: Number(userId),
+      userSession: req.user,
     });
   }
 

@@ -139,13 +139,19 @@ export class UserService {
 
   async updateUserProfile({
     user_id,
+    userSession,
     ...data
   }: UpdateUserDto): Promise<User | undefined> {
     try {
       const source$ = this.userClient
         .send(
           { role: 'user', cmd: 'update-user-profile' },
-          { id: user_id, ...data },
+          {
+            id: Number(user_id),
+            isAdmin: data.isAdmin,
+            email: data.email,
+            userSession,
+          },
         )
         .pipe(timeout(2000));
 
