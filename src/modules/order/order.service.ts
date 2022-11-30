@@ -61,13 +61,13 @@ export class OrderService {
 
   async updateOrderStatus(
     { id }: UpdateOrderParamDto,
-    category: UpdateOrderBodyDto,
+    order: UpdateOrderBodyDto,
   ): Promise<Order | undefined> {
     try {
       const source$ = this.orderClient
         .send(
           { role: 'order', cmd: 'update-order-status' },
-          { ...category, id: Number(id) },
+          { ...order, id: Number(id) },
         )
         .pipe(timeout(20000));
 
@@ -122,8 +122,6 @@ export class OrderService {
     userSession: IUserSession,
   ): Promise<Order | undefined> {
     try {
-      console.log(userSession);
-
       const data: FindOrdersByFieldsDto = {};
 
       if (userSession.role !== 'admin') {

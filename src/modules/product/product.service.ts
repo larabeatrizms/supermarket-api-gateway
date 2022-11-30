@@ -8,6 +8,7 @@ import {
 import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
 import { map, timeout } from 'rxjs/operators';
+import { IUserSession } from '../auth/interfaces/user-session.interface';
 import { CreateCategoryDto } from './dtos/create-category.dto';
 import { CreateProductDto } from './dtos/create-product.dto';
 import { DeleteCategoryDto } from './dtos/delete-category.dto';
@@ -130,17 +131,18 @@ export class ProductService {
     }
   }
 
-  async findProductById({
-    id,
-  }: FindProductByIdDto): Promise<Product | undefined> {
+  async findProductById(
+    { id }: FindProductByIdDto,
+    userSession: IUserSession,
+  ): Promise<Product | undefined> {
+    const data = {
+      id: Number(id),
+      show_pricing_history: userSession.role === 'admin',
+    };
+
     try {
       const source$ = this.productClient
-        .send(
-          { role: 'product', cmd: 'find-product-by-id' },
-          {
-            id: Number(id),
-          },
-        )
+        .send({ role: 'product', cmd: 'find-product-by-id' }, data)
         .pipe(timeout(100000));
 
       const result = await lastValueFrom(source$, {

@@ -13,6 +13,7 @@ import {
   Post,
   Put,
   Query,
+  Request,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -79,9 +80,13 @@ export class ProductController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('customer', 'admin')
   @Get('product/:id')
-  @ApiOperation({ summary: 'Busca um produto pelo ID.' })
-  async findProductById(@Param() params: FindProductByIdDto) {
-    return this.service.findProductById(params);
+  @ApiOperation({
+    summary: 'Busca um produto pelo ID.',
+    description:
+      'Exibe histórico de preços apenas para usuários do tipo administrador.',
+  })
+  async findProductById(@Param() params: FindProductByIdDto, @Request() req) {
+    return this.service.findProductById(params, req.user);
   }
 
   @ApiTags('Produto')
