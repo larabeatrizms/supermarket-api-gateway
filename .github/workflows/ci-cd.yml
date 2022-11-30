@@ -19,7 +19,7 @@ jobs:
         with:
           node-version: '16'
       - name: Tests
-        run: echo "Run your tests here"
+        run: npm run test
       - name: Install Architect CLI
         run: sudo npm install -g @architect-io/cli
       - name: Login to Architect Cloud
