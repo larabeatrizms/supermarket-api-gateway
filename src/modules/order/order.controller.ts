@@ -45,14 +45,15 @@ export class OrderController {
   @ApiTags('Pedido')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin')
+  @Roles('admin', 'customer')
   @Patch('order/:id')
   @ApiOperation({ summary: 'Atualiza o status de um pedido.' })
   async updateOrderStatus(
     @Param() params: UpdateOrderParamDto,
     @Body() order: UpdateOrderBodyDto,
+    @Request() req,
   ) {
-    return this.service.updateOrderStatus(params, order);
+    return this.service.updateOrderStatus(params, order, req.user);
   }
 
   @ApiTags('Pedido')

@@ -62,12 +62,13 @@ export class OrderService {
   async updateOrderStatus(
     { id }: UpdateOrderParamDto,
     order: UpdateOrderBodyDto,
+    userSession: IUserSession,
   ): Promise<Order | undefined> {
     try {
       const source$ = this.orderClient
         .send(
           { role: 'order', cmd: 'update-order-status' },
-          { ...order, id: Number(id) },
+          { ...order, id: Number(id), userSession },
         )
         .pipe(timeout(20000));
 
